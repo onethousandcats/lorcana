@@ -1,9 +1,10 @@
 import { useState } from "react"
 
-export default ({ url }) => {
+export default ({ url, name, rarity }) => {
     const [flipped, setFlipped] = useState(false);
 
     const onClick = () => {
+        console.log(name, rarity);
         setFlipped(!flipped);
     }
 
@@ -12,15 +13,15 @@ export default ({ url }) => {
             className={`card ${flipped ? 'flipped' : ''}`}
             onClick={onClick}
         >
-            <div class='inner'>
+            <div className='inner'>
                 <div 
-                    class='front'
+                    className='front'
                     style={{
                         backgroundImage: `url(${url})`,
                     }}    
                 >
                 </div>
-                <div class ='back'>
+                <div className='back'>
                 </div>
             </div>
         </div>
