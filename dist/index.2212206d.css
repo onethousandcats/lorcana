@@ -7,7 +7,7 @@
 }
 
 .tableau {
-  flex-direction: row;
+  flex-flow: wrap;
   gap: 14px;
   display: flex;
 }
