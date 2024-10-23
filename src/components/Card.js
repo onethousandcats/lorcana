@@ -1,24 +1,39 @@
 import { useState } from "react"
+import { $detail } from "../stores/detail";
 
-export default ({ url, name, rarity }) => {
-    const [flipped, setFlipped] = useState(false);
+export default ({ info, flip }) => {
+    const [flipped, setFlipped] = useState(!flip);
 
     const onClick = () => {
-        console.log(name, rarity);
         setFlipped(!flipped);
+    }
+
+    const onMouseDown = (e) => {
+        if (e.button === 2) {
+            $detail.set(info);
+        }
+    }
+
+    const onMouseUp = (e) => {
+        if (e.button === 2) {
+            $detail.set(null);
+        }
     }
 
     return (
         <div
+            key={info.Unique_ID}
             className={`card ${flipped ? 'flipped' : ''}`}
             onClick={onClick}
+            onMouseDown={onMouseDown}
+            onMouseUp={onMouseUp}
         >
             <div className='inner'>
                 <div 
                     className='front'
                     style={{
-                        backgroundImage: `url(${url})`,
-                    }}    
+                        backgroundImage: `url("${info.Image}")`,
+                    }}
                 >
                 </div>
                 <div className='back'>

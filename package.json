@@ -5,6 +5,8 @@
     "process": "^0.11.10"
   },
   "dependencies": {
+    "@nanostores/react": "^0.8.0",
+    "nanostores": "^0.11.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1"
   }
