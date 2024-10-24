@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import Card from "./Card";
 
 export default ({ card }) => {
@@ -19,7 +19,7 @@ export default ({ card }) => {
             onMouseEnter={onMouseEnter}
             onMouseLeave={onMouseLeave}
         >
-            <Card info={card} flip />
+            <Card id={card} />
         </div>
     );
 }

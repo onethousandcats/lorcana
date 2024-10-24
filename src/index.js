@@ -8,7 +8,7 @@ import './style/App.scss';
 import { useStore } from '@nanostores/react';
 import { $detail } from './stores/detail';
 import Details from './components/Details';
-import { $players } from './stores/players';
+import { $decks, $hands } from './stores/players';
 import Hand from './components/Hand';
 
 const App = () => {
@@ -23,8 +23,11 @@ const App = () => {
         }
     }
 
+    const handCount = 7;
+
     const cards = shuffle([...allCards()]);
-    $players.setKey('p1', { deck: cards.slice(0, 60) });
+    $decks[0].set(cards.slice(0, 60).map(card => ({ ...card, shown: false })));
+    $hands[0].set(Object.keys($decks[0].get()).slice(0, handCount));
 
     return (
         <div 
@@ -42,8 +45,8 @@ const App = () => {
             />
             <div className='play-area'>
                 <Tableau>
-                    { cards.slice(0, 15).map((card) => (
-                        <Card info={card} />
+                    { Object.keys($decks[0].get()).slice(20, 28).map((card) => (
+                        <Card id={card} />
                     ))}
                 </Tableau>
                 <Hand />

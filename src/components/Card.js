@@ -1,23 +1,24 @@
 import { useEffect, useState } from "react"
 import { $detail } from "../stores/detail";
+import { useStore } from "@nanostores/react";
+import { $decks, flip } from "../stores/players";
 
-export default ({ info, flip }) => {
-    const [flipped, setFlipped] = useState(!flip);
+export default ({ id }) => {
+    const info = useStore($decks[0], {keys: [ id ]})[id];
+
     const [dragging, setDragging] = useState(false);
 
     const [position, setPosition] = useState({ x: 0, y: 0 });
     const [offset, setOffset] = useState({ x: 0, y: 0 });
 
-    const onClick = () => {
-        console.log('click');
-
-        setFlipped(!flipped);
-    }
-
     const onMouseDown = (e) => {
-        if (e.button === 2 && !flipped) {
+        if (e.button === 2 && info.shown) {
             $detail.set(info);
             return;
+        }
+
+        if (e.button === 1) {
+            flip(id);
         }
 
         e.stopPropagation();
@@ -27,18 +28,13 @@ export default ({ info, flip }) => {
     }
 
     const onMouseUp = (e) => {
+        setDragging(false);
+
+        setPosition({ x: 0, y : 0 });
+        
         if (e.button === 2) {
             $detail.set(null);
-            return;
         }
-
-        setDragging(false);
-    }
-
-    const handleDragEnd = () => {
-        setDragging(false);
-
-        console.log('drag', dragging);
     }
 
     const handleMouseMove = (e) => {
@@ -53,21 +49,19 @@ export default ({ info, flip }) => {
             onMouseMove={handleMouseMove}
             onMouseLeave={onMouseUp}
             key={info.Unique_ID}
-            className={`card ${flipped ? 'flipped' : ''}`}
-            onClick={onClick}
+            className={`card ${!info.shown ? 'flipped' : ''}`}
             onMouseDown={onMouseDown}
             onMouseUp={onMouseUp}
             style={{
-                position: dragging ? "absolute" : "static",
-                left: `${position.x}px`,
-                top: `${position.y}px`,
+                transform: `translateX(${position.x}px) translateY(${position.y}px)`,
+                transition: !dragging ? "transform 0.5s ease" : "none",
             }}
         >
             <div className='inner'>
                 <div 
                     className='front'
                     style={{
-                        backgroundImage: `url("${info.Image}")`,
+                        backgroundImage: `url("${info?.Image}")`,
                     }}
                 >
                 </div>
