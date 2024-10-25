@@ -1,18 +1,23 @@
 import React, { useEffect } from 'react';
-import Tableau from './components/Tableau';
 import { createRoot } from 'react-dom/client';
-import Card from './components/Card';
-import { allCards, shuffle } from './libraries/data';
 
 import './style/App.scss';
-import { useStore } from '@nanostores/react';
 import { $detail } from './stores/detail';
 import Details from './components/Details';
-import { $decks, $hands } from './stores/players';
 import Hand from './components/Hand';
+import Inkwell from './components/Inkwell';
+import { setup } from './backend/setup';
+import { useStore } from '@nanostores/react';
+import { $hands } from './stores/players';
+import Card from './components/Card';
 
 const App = () => {
+    const hand = useStore($hands[0]);
 
+    useEffect(() => {
+        setup();
+    }, []);
+    
     const handleContextMenu = (event) => {
         event.preventDefault();
     }
@@ -22,12 +27,6 @@ const App = () => {
             $detail.set(null);
         }
     }
-
-    const handCount = 7;
-
-    const cards = shuffle([...allCards()]);
-    $decks[0].set(cards.slice(0, 60).map(card => ({ ...card, shown: false })));
-    $hands[0].set(Object.keys($decks[0].get()).slice(0, handCount));
 
     return (
         <div 
@@ -49,7 +48,11 @@ const App = () => {
                         <Card id={card} />
                     ))}
                 </Tableau> */}
+                <Inkwell />
                 <Hand />
+                { hand.map(card => (
+                    <Card id={card} />
+                ))}
             </div>
         </div>
     )
