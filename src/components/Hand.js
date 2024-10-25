@@ -20,7 +20,10 @@ export default () => {
     // }, []);
 
     return (
-        <div className="hand section">
+        <div 
+            id="hand"
+            className="hand section"
+        >
         </div>
     )
 }

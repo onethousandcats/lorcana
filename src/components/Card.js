@@ -2,19 +2,18 @@ import { useEffect, useState } from "react"
 import { $detail } from "../stores/detail";
 import { $selected } from "../stores/selected";
 import { useStore } from "@nanostores/react";
-import { $decks, flip, ink } from "../stores/players";
+import { $decks, $inkValue, flip, ink, setLocation, turnDown } from "../stores/players";
 
 export default ({ id }) => {
     const info = useStore($decks[0], {keys: [ id ]})[id];
-
-    const locations = [ 'ink-well' ];
-
+    const locations = [ 'ink-well', 'hand' ];
+    
     const selected = useStore($selected);
+    const inkValue = useStore($inkValue(0));
 
     const [dragging, setDragging] = useState(false);
     const [dropSpot, setDropSpot] = useState({});
-
-    const [position, setPosition] = useState({ x: 0, y: 0 });
+    const [position, setPosition] = useState(info.location);
     const [offset, setOffset] = useState({ x: 0, y: 0 });
 
     const PADDING = 10;
@@ -29,35 +28,40 @@ export default ({ id }) => {
             return;
         }
 
-        if (e.button === 1) {
+        if (e.button === 1) 
             flip(id);
-        }
 
         e.stopPropagation();
 
         setDragging(true);
         $selected.set(info);
 
-        setOffset({ x: e.clientX - e.target.offsetLeft, y: e.clientY - e.target.offsetTop });
+        setOffset({ x: e.clientX - info.location.x, y: e.clientY - info.location.y });
     }
 
     const onMouseUp = (e) => {
         setDragging(false);
         $selected.set(null);
 
-        const position = { x: 0, y: 0 };
+        console.log(info);
 
-        if (dropSpot.spot !== undefined && (dropSpot.spot !== 'ink-well' || info.Inkable)) {
-            position.x = dropSpot.x + PADDING;
-            position.y = dropSpot.y + PADDING;
+        if (dropSpot.spot !== undefined 
+            && (dropSpot.spot !== 'ink-well' || info.Inkable) 
+            && (dropSpot.spot !== 'hand' || info.Cost <= inkValue) 
+        )   
+        {
+            const p = { x: dropSpot.x + PADDING, y: dropSpot.y + PADDING }
+
+            setLocation(id, p);
+            setPosition(p);
 
             if (dropSpot.spot === 'ink-well') {
-                flip(id);
+                turnDown(id);
                 ink(id);
             }
+        } else {
+            setPosition(info.location);
         }
-
-        setPosition(position);
         
         if (e.button === 2) {
             $detail.set(null);
