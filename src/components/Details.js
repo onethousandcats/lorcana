@@ -8,8 +8,10 @@ export default () => {
     if (!details)
         return null;
 
+    console.log(details.Type);
+
     return (
-        <div className='details'>
+        <div className={`details ${details.Type === 'Location' ? 'turned' : ''}`}>
             <div 
                 className='card'
                 style={{

@@ -85,6 +85,10 @@ body {
     justify-content: center;
     align-items: center;
 
+    &.turned {
+        transform: rotate(90deg);
+    }
+
     .card {
         width: $width * 2;
         height: $height * 2;

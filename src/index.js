@@ -44,11 +44,11 @@ const App = () => {
                 src='https://wiki.mushureport.com/images/thumb/5/57/Disney_Lorcana_TCG_Logo_transparent.png/1200px-Disney_Lorcana_TCG_Logo_transparent.png' 
             />
             <div className='play-area'>
-                <Tableau>
+                {/* <Tableau>
                     { Object.keys($decks[0].get()).slice(20, 28).map((card) => (
                         <Card id={card} />
                     ))}
-                </Tableau>
+                </Tableau> */}
                 <Hand />
             </div>
         </div>

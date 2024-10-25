@@ -13,6 +13,7 @@ export default ({ id }) => {
 
     const onMouseDown = (e) => {
         if (e.button === 2 && info.shown) {
+            console.log(info);
             $detail.set(info);
             return;
         }
@@ -49,11 +50,11 @@ export default ({ id }) => {
             onMouseMove={handleMouseMove}
             onMouseLeave={onMouseUp}
             key={info.Unique_ID}
-            className={`card ${!info.shown ? 'flipped' : ''}`}
+            className={`card ${!info.shown ? 'flipped' : ''} ${info.Type === 'Location' && dragging ? 'turned' : ''}`}
             onMouseDown={onMouseDown}
             onMouseUp={onMouseUp}
             style={{
-                transform: `translateX(${position.x}px) translateY(${position.y}px)`,
+                transform: `translateX(${position.x}px) translateY(${position.y}px) ${info.Type === 'Location' && dragging ? 'rotate(90deg)' : ''}`,
                 transition: !dragging ? "transform 0.5s ease" : "none",
             }}
         >
