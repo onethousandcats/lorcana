@@ -1,3 +1,4 @@
+import { locations } from "../config/locations"
 
 export default () => {
     // const deck = useStore($decks[0]);
@@ -21,7 +22,7 @@ export default () => {
 
     return (
         <div 
-            id="hand"
+            id={locations.HAND}
             className="hand section"
         >
         </div>

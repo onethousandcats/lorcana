@@ -10,6 +10,8 @@ import { setup } from './backend/setup';
 import { useStore } from '@nanostores/react';
 import { $hands } from './stores/players';
 import Card from './components/Card';
+import Play from './components/Play';
+import Deck from './components/Deck';
 
 const App = () => {
     const hand = useStore($hands[0]);
@@ -43,11 +45,8 @@ const App = () => {
                 src='https://wiki.mushureport.com/images/thumb/5/57/Disney_Lorcana_TCG_Logo_transparent.png/1200px-Disney_Lorcana_TCG_Logo_transparent.png' 
             />
             <div className='play-area'>
-                {/* <Tableau>
-                    { Object.keys($decks[0].get()).slice(20, 28).map((card) => (
-                        <Card id={card} />
-                    ))}
-                </Tableau> */}
+                <Deck />
+                <Play />
                 <Inkwell />
                 <Hand />
                 { hand.map(card => (

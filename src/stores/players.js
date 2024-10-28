@@ -1,4 +1,5 @@
 import { atom, computed, map } from "nanostores";
+import { locations } from "../config/locations";
 
 export const $decks = [
     map({}),
@@ -24,8 +25,7 @@ export const reveal = (id) => setShown(id, true);
 
 export const ink = (id) => {
     const val = $decks[0].get()[id];
-    $decks[0].setKey(id, { ...val, inked: true });
-    turnDown(id);
+    $decks[0].setKey(id, { ...val, location: locations.INKWELL });
 }
 
 export const setLocation = (id, location) => {
@@ -33,6 +33,18 @@ export const setLocation = (id, location) => {
     $decks[0].setKey(id, { ...val, location });
 }
 
+export const setCardPosition = (id, position) => {
+    const val = $decks[0].get()[id];
+    $decks[0].setKey(id, { ...val, position });
+}
+
 export const $inkValue = (player) => computed(($decks[player]), (deck) => {
-    return Object.values(deck).reduce((acc, card) => acc + (card.inked === true ? 1 : 0), 0);
+    return Object.values(deck).filter(card => card.location === locations.INKWELL).length;
+});
+
+export const $locationCount = (player) => computed(($decks[player]), (deck) => {
+    return Object.values(locations).reduce((acc, l) => {
+        acc[l] = Object.values(deck).filter(card => card.location === l).length;
+        return acc;
+    }, {});
 });

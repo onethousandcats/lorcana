@@ -1,5 +1,6 @@
 import { useStore } from "@nanostores/react";
 import { $inkValue } from "../stores/players";
+import { locations } from "../config/locations";
 
 export default () => {
 
@@ -7,7 +8,7 @@ export default () => {
 
     return (
         <div
-            id="ink-well" 
+            id={locations.INKWELL} 
             className="ink-well section"
         >
             <p>{ inkValue }</p>

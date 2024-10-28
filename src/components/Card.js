@@ -2,15 +2,20 @@ import { useEffect, useState } from "react"
 import { $detail } from "../stores/detail";
 import { $selected } from "../stores/selected";
 import { useStore } from "@nanostores/react";
-import { $decks, $inkValue, flip, ink, setLocation, turnDown } from "../stores/players";
+import { $decks, $inkValue, $locationCount, flip, setCardPosition, setLocation } from "../stores/players";
+import { locations, hidden } from "../config/locations";
 
 export default ({ id }) => {
     const info = useStore($decks[0], {keys: [ id ]})[id];
-    const locations = [ 'ink-well', 'hand' ];
+
+    const locationList = Object.values(locations);
     
     const selected = useStore($selected);
     const inkValue = useStore($inkValue(0));
+    
+    const locationCount = useStore($locationCount(0));
 
+    const [zIndex, setZIndex] = useState(100);
     const [dragging, setDragging] = useState(false);
     const [dropSpot, setDropSpot] = useState({});
     const [position, setPosition] = useState(info.location);
@@ -36,31 +41,32 @@ export default ({ id }) => {
         setDragging(true);
         $selected.set(info);
 
-        setOffset({ x: e.clientX - info.location.x, y: e.clientY - info.location.y });
+        setOffset({ x: e.clientX - info.position.x, y: e.clientY - info.position.y });
     }
 
     const onMouseUp = (e) => {
         setDragging(false);
         $selected.set(null);
 
-        console.log(info);
-
         if (dropSpot.spot !== undefined 
-            && (dropSpot.spot !== 'ink-well' || info.Inkable) 
-            && (dropSpot.spot !== 'hand' || info.Cost <= inkValue) 
+            && (dropSpot.spot !== locations.INKWELL || info.Inkable) 
+            && (dropSpot.spot !== locations.IN_PLAY || info.Cost <= inkValue) 
         )   
         {
             const p = { x: dropSpot.x + PADDING, y: dropSpot.y + PADDING }
 
-            setLocation(id, p);
+            if (dropSpot.spot === locations.IN_PLAY)
+                p.x += locationCount[dropSpot.spot] * (215 * 0.6 + PADDING);
+
+            console.log(p);
+
+            setCardPosition(id, p);
             setPosition(p);
 
-            if (dropSpot.spot === 'ink-well') {
-                turnDown(id);
-                ink(id);
-            }
+            setLocation(id, dropSpot.spot);
+            setZIndex(locationCount[dropSpot.spot]);
         } else {
-            setPosition(info.location);
+            setPosition(info.position);
         }
         
         if (e.button === 2) {
@@ -72,7 +78,7 @@ export default ({ id }) => {
         if (!dragging)
             return;
 
-        const el = document.elementsFromPoint(e.clientX, e.clientY).filter(l => locations.includes(l.id));
+        const el = document.elementsFromPoint(e.clientX, e.clientY).filter(l => locationList.includes(l.id));
 
         if (el.length < 1)
             setDropSpot({});
@@ -88,7 +94,7 @@ export default ({ id }) => {
 
     let classes = `card`;
 
-    if (!info.shown)
+    if (hidden.includes(info.location))
         classes += ' flipped';
 
     if (info.Type === 'Location' && dragging)
@@ -110,6 +116,7 @@ export default ({ id }) => {
             style={{
                 transform: `translateX(${position.x}px) translateY(${position.y}px) ${info.Type === 'Location' && dragging ? 'rotate(90deg)' : ''}`,
                 transition: !dragging ? "transform 0.5s ease" : "none",
+                zIndex: zIndex,
             }}
         >
             <div className='inner'>
