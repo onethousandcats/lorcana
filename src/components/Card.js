@@ -109,10 +109,13 @@ export default ({ id }) => {
     return (
         <div
             onMouseMove={handleMouseMove}
+            onTouchMove={handleMouseMove}
             key={info.Unique_ID}
             className={classes}
             onMouseDown={onMouseDown}
+            onTouchStart={onMouseDown}
             onMouseUp={onMouseUp}
+            onTouchEnd={onMouseUp}
             style={{
                 transform: `translateX(${position.x}px) translateY(${position.y}px) ${info.Type === 'Location' && dragging ? 'rotate(90deg)' : ''}`,
                 transition: !dragging ? "transform 0.5s ease" : "none",
